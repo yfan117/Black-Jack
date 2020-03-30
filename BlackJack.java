@@ -1,261 +1,248 @@
 package blackJack;
 
-import java.util.Scanner;
+import java.awt.*;
+import javax.swing.*;
 
-public class BlackJack {
+class Draw extends JPanel
+{
+	static Image cardImage;
+	static Image backGround;
+	static ImageIcon imageIcon;
 	
-	static Scanner scan = new Scanner(System.in);
 
-	static double deck[] ;
-	static boolean over = false;
-
-	static int placeInDeck = 0;
-
+	static boolean isDealer = false;
+	//static String cardType = "";
+	static int faceValue = 0;
+	static int dealerX = 750;
+	static int dealerY = 250;
+	static int playerX = 600;
+	static int playerY = 660;
+	static int dealerNumCard =0;
+	static int playerNumCard =0;
 	
-	public static void main(String[] args) {
-		 
-		Shuffle newDeck = new Shuffle();
-		newDeck.shuffle();
-		deck = newDeck.getDeck();
-		
-		runGame();
-		
+	static double[] dealerCards;
+	static double[] playerCards;
+	
+	static JButton hit;
+	static JButton stand;
+	
+	public Draw()
+	{
+		imageIcon = new ImageIcon("res/blackJackTable.png");
+		backGround = imageIcon.getImage();
+		//repaint();
+		//paint(null);
+	
 	}
 	
-	public static void runGame()
-	{		
+	public void setVariable(double dealerCard[], double playerCards[], int dealerNum, int playNum)
+	{
+		//this.isDealer = isDealer;
+		this.dealerCards = dealerCard;
+		this.playerCards = playerCards;
+		dealerNumCard = dealerNum;
+		playerNumCard = playNum;
 		
-		CardsInHand dealer = new CardsInHand();
-		CardsInHand player = new CardsInHand();
-
+		repaint();
+	}
+	
+	public void displayButton()
+	{
+		hit = new JButton(new ImageIcon("res/hitButton.png"));
+		hit.setBounds(1100, 480, 200, 100);
+		add(hit);
+	}
+	
 		
-		Display table = new Display();
-
-		playerHit(table, player);
-		
-		dealerHit(table, dealer);
-
-		playerHit(table, player);
-		
-		dealer.setHidden(deck[placeInDeck]);
-		placeInDeck++;
-		table.setDealer(dealer);
-
-		if(( dealer.getDealerBlackJack() == true) && ( player.getPlayerBlackJack() == false))
+		protected void paintComponent(Graphics g)
 		{
-			System.out.println("dealer black jack, dealer wins");
-			over = true;
-			dealer.revealHidden();
-			table.updateDisplay();
-		}
-		else if (( dealer.getDealerBlackJack() == true) && ( player.getPlayerBlackJack() == true))
-		{
-			System.out.println("tie, push");
-			over = true;
-			dealer.revealHidden();
-			table.updateDisplay();
-		}
-		else if (( dealer.getDealerBlackJack() == false) && ( player.getPlayerBlackJack() == true))
-		{
-			System.out.println("player black jack, playe wins");
-			over = true;
-			dealer.revealHidden();
-			table.updateDisplay();
-		}
-		
-		
-		if(over == false)
-		{
-			table.displayButton();
-			System.out.println("hit?");
-			int input = scan.nextInt();
-			while(input == 1) 
-			{
-				playerHit(table, player);
-				
-				int scoreAce_1 = player.getScore_1();
-				int scoreAce_11 = player.getScore_11();
-				
-				if((scoreAce_1 > 21) && (scoreAce_11 > 21))
-				{
-					System.out.println("player bust, dealer wins");
-					over = true;
-					break;
-				}
-				
-				if((scoreAce_1 == 21) || (scoreAce_11 == 21))
-				{
-					//System.out.println("player wins, dealer wins");
-					//over = true;
-					break;
-				}
-				
-				System.out.println("hit?");
-				table.displayButton();
-				input = scan.nextInt();
+			super.paintComponent(g);
+			g.drawImage(backGround, 0, 0, null);
+			g.setFont(new Font("serif", Font.BOLD, 40));
+			String type = "";
+			String value = "";
 
-			}
-			
-			
-			
-			if(over == true)
+			for(int i =0; i< dealerNumCard; i++)
 			{
-				dealer.revealHidden();
-				table.updateDisplay();
-			}
-			else
-			{
-				dealer.revealHidden();
-				table.updateDisplay();
-				
-				int scoreAce_1 = dealer.getScore_1();
-				int scoreAce_11 = dealer.getScore_11();
-				
-				while((scoreAce_1 < 17) && (scoreAce_11 < 17))
+				if(dealerCards[i] != -1)
 				{
-					dealerHit(table, dealer);
+					type = "res/" +getType(dealerCards[i]);
 					
-					scoreAce_1 = dealer.getScore_1();
-					scoreAce_11 = dealer.getScore_11();
-					//System.out.println(scoreAce_1);
-					//System.out.println(scoreAce_11);
-
-					
-					if((scoreAce_1 > 21) && (scoreAce_11 > 21))
-					{
-						System.out.println("dealer bust, player wins");
-						over = true;
-						break;
-					}
-					
-					//if(((scoreAce_1 > 17) && (scoreAce_1 <= 21)) || ((scoreAce_11 > 17) && (scoreAce_11 <= 21)))
-					if((scoreAce_1 > 17) && (scoreAce_1 <= 21))
-					{
-						break;
-					}
-					
-				}
-				
-			}
-			
-			if(over == false)
-			{
-				int dealerScore = 0;
-				int playerScore = 0;
-				
-				/*
-				System.out.println(dealer.getScore_1());
-				System.out.println(dealer.getScore_11());
-				
-				System.out.println(player.getScore_1());
-				System.out.println(player.getScore_11());
-				*/
-				
-				if(dealer.getScore_1() > 21)
-				{
-					dealerScore = dealer.getScore_11();
-				}
-				else if(dealer.getScore_11() > 21)
-				{
-					dealerScore = dealer.getScore_1();
-				}
-				else if(dealer.getScore_1() == dealer.getScore_11())
-				{
-					dealerScore = dealer.getScore_11();
-				}
-				else if(dealer.getScore_1() > dealer.getScore_11())
-				{
-					dealerScore = dealer.getScore_1();
-				}
-				else if(dealer.getScore_1() < dealer.getScore_11())
-				{
-					dealerScore = dealer.getScore_11();
-				}
-				
-				if(player.getScore_1() > 21)
-				{
-					playerScore = dealer.getScore_11();
-				}
-				else if(player.getScore_11() > 21)
-				{
-					playerScore = player.getScore_1();
-				}
-				else if(player.getScore_1() == player.getScore_11())
-				{
-					playerScore = player.getScore_11();
-				}
-				else if(player.getScore_1() > player.getScore_11())
-				{
-					playerScore = player.getScore_1();
-				}
-				else if(player.getScore_1() < player.getScore_11())
-				{
-					playerScore = player.getScore_11();
-				}
-				
-				if(playerScore > dealerScore)
-				{
-					System.out.println("player wins "+playerScore +" over " +dealerScore);
-
-				}
-				else if(playerScore < dealerScore)
-				{
-					System.out.println("dealer wins "+dealerScore +" over " +playerScore);
-
+					value = getValue((int)dealerCards[i]);
 				}
 				else
 				{
-					System.out.println("tie by " +dealerScore);
-
+					type = "res/backCard.png";
 				}
 				
+				cardImage = new ImageIcon(type).getImage();
+				
+				g.drawImage(cardImage, dealerX, dealerY, null);
+				g.drawString(value, dealerX + 5, dealerY + 40);
+				if((int)dealerCards[i] == 10)
+				{
+					g.drawString(value, dealerX + 35, dealerY + 130);
+				}
+				else
+				g.drawString(value, dealerX + 68, dealerY + 130);
+				dealerX = dealerX - 100;
+				value = "";
+			}
+			
+			for(int i =0; i< playerNumCard; i++)
+			{
+				
+				type = "res/" +getType(playerCards[i]);
+				value = getValue((int)playerCards[i]);
+				
+				cardImage = new ImageIcon(type).getImage();
+				g.drawImage(cardImage, playerX, playerY, null);
+				g.drawString(value, playerX + 5, playerY + 40);
+				if((int)playerCards[i] == 10)
+				{
+					g.drawString(value, playerX + 35, playerY + 130);
+				}
+				else
+				g.drawString(value, playerX + 68, playerY + 130);
+				playerX = playerX + 50;
+				playerY = playerY - 50;
+				value = "";
+			}
+			
+		
+			
+			dealerX = 750;
+			dealerY = 250;
+			playerX = 600;
+			playerY = 660;
+			
+		}
+		
+		public static String getValue(int rawValue)
+		{
+			String value = "";
+			
+			if(rawValue == 1) {
+				value = "A";
+			}
+			else if(rawValue == 11)
+			{
+				value = "J";
+			}
+			else if(rawValue == 12)
+			{
+				value = "Q";
+			}
+			else if(rawValue == 13)
+			{
+				value = "K";
+			}
+			else
+			{
+				value = String.valueOf(rawValue);
 			}
 			
 			
+			return value;
+		}
+		public static String getType(double rawValue)
+		{
+			//System.out.println(rawValue);
+			
+			int suitValue = (int) (Math.round((rawValue - (int)(rawValue))*10));
+			//System.out.println(suitValue);
+
+			String type = "";
+			switch(suitValue)
+			{
+				case(0):
+				{
+					type = "diamond.png";
+					break;
+				}
+				case(1):
+				{
+					type = "club.png";
+					break;
+				}
+				case(2):
+				{
+					type = "heart.png";
+					break;
+				}
+				case(3):
+				{
+					type = "spade.png";	
+					break;
+				}
+			}
+			return type;
 			
 			
 		}
-	}
+		
+		}
 	
-	/*
-	public static void firstHit(Display table, CardsInHand dealer)
+
+
+
+public class Display extends JFrame{
+	public static double dealerCard[];
+	public static double playerCard[];
+	public static boolean over = false;
+	public static int numPlayerCard = 0;
+	public static int numDealerCard = 0;
+	
+	static Draw update ;
+
+	public Display ()
 	{
-		dealer.setHidden(deck[placeInDeck]);
-		placeInDeck++;
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(1392, 851);
+		setResizable(false);
+
+		update = new Draw();
+		getContentPane().add(update);
+		
+		setVisible(true);		
 
 	}
-	*/
-	public static void dealerHit(Display table, CardsInHand dealer)
+	
+	public void updateDisplay()
 	{
-		//System.out.println(deck[placeInDeck]);
-		
-		
-		
-		dealer.addHand(deck[placeInDeck]);
-		
-		placeInDeck++;
-		
-		table.setDealer(dealer);
-		
+		update.setVariable(dealerCard, playerCard, numDealerCard, numPlayerCard);
+
 	}
-	
-	public static void playerHit(Display table, CardsInHand player)
+
+	public void displayButton()
 	{
-		//System.out.println(deck[placeInDeck]);
-		
-		
+		update.displayButton();
+	}
+	
+	public void setDealer(CardsInHand dealer)
+	{
+		dealerCard = dealer.getCards();
+		numDealerCard = dealer.getNumCard();
+		update.setVariable(dealerCard, playerCard, numDealerCard, numPlayerCard);
 
+		//display();
 		
-		player.addHand(deck[placeInDeck]);
+	}
+	
+	public void setPlayer(CardsInHand player)
+	{
+		playerCard = player.getCards();
+		numPlayerCard = player.getNumCard();
+		update.setVariable(dealerCard, playerCard, numDealerCard, numPlayerCard);
 		
-		placeInDeck++;
+		//display();
+	}
+	
 
-		table.setPlayer(player);
-
+	public void setOver(boolean isOver)
+	{
+		over = isOver;
 	}
 	
 	
-	
-	
-
 }
