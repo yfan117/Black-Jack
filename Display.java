@@ -17,7 +17,7 @@ class Draw extends JPanel
 	static boolean isDealer = false;
 	//static String cardType = "";
 	static int faceValue = 0;
-	static int dealerX = 900;
+	static int dealerX = 750;
 	static int dealerY = 250;
 	static int playerX = 600;
 	static int playerY = 660;
@@ -74,6 +74,11 @@ class Draw extends JPanel
 				
 				g.drawImage(cardImage, dealerX, dealerY, null);
 				g.drawString(value, dealerX + 5, dealerY + 40);
+				if((int)dealerCards[i] == 10)
+				{
+					g.drawString(value, dealerX + 35, dealerY + 130);
+				}
+				else
 				g.drawString(value, dealerX + 68, dealerY + 130);
 				dealerX = dealerX - 100;
 				value = "";
@@ -88,12 +93,21 @@ class Draw extends JPanel
 				cardImage = new ImageIcon(type).getImage();
 				g.drawImage(cardImage, playerX, playerY, null);
 				g.drawString(value, playerX + 5, playerY + 40);
+				if((int)playerCards[i] == 10)
+				{
+					g.drawString(value, playerX + 35, playerY + 130);
+				}
+				else
 				g.drawString(value, playerX + 68, playerY + 130);
 				playerX = playerX + 50;
 				playerY = playerY - 50;
 				value = "";
 			}
 			
+			dealerX = 750;
+			dealerY = 250;
+			playerX = 600;
+			playerY = 660;
 			
 		}
 		
