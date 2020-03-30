@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class BlackJack {
 	
 	static Scanner scan = new Scanner(System.in);
-	//static double deck[] = {1.0, 1.0, 10.0, 10.0} ;
+
 	static double deck[] ;
 	static boolean over = false;
 
@@ -13,7 +13,6 @@ public class BlackJack {
 
 	
 	public static void main(String[] args) {
-		 //hearts, clubs, diamonds and spades
 		 
 		Shuffle newDeck = new Shuffle();
 		newDeck.shuffle();
@@ -21,65 +20,53 @@ public class BlackJack {
 		
 		runGame();
 		
-		/*
-		for(int i =0; i < deck.length; i++)
-		{
-			System.out.println(deck[i]);
-		}
-		
-		System.out.println(deck.length);
-		 */
-		 
 	}
 	
 	public static void runGame()
 	{		
+		
 		CardsInHand dealer = new CardsInHand();
 		CardsInHand player = new CardsInHand();
 
-		String winner = "";
 		
 		Display table = new Display();
 
-		//firstHit(table, dealer);		
-		//dealerHit(table, dealer);
+		playerHit(table, player);
 		
+		dealerHit(table, dealer);
 
 		playerHit(table, player);
 		
 		dealer.setHidden(deck[placeInDeck]);
 		placeInDeck++;
-		//table.display();
-		
-		playerHit(table, player);
-		
-		dealerHit(table, dealer);
-		
+		table.setDealer(dealer);
+
 		if(( dealer.getDealerBlackJack() == true) && ( player.getPlayerBlackJack() == false))
 		{
 			System.out.println("dealer black jack, dealer wins");
 			over = true;
 			dealer.revealHidden();
-			table.display();
+			table.updateDisplay();
 		}
 		else if (( dealer.getDealerBlackJack() == true) && ( player.getPlayerBlackJack() == true))
 		{
 			System.out.println("tie, push");
 			over = true;
 			dealer.revealHidden();
-			table.display();
+			table.updateDisplay();
 		}
 		else if (( dealer.getDealerBlackJack() == false) && ( player.getPlayerBlackJack() == true))
 		{
 			System.out.println("player black jack, playe wins");
 			over = true;
 			dealer.revealHidden();
-			table.display();
+			table.updateDisplay();
 		}
 		
 		
 		if(over == false)
 		{
+			table.displayButton();
 			System.out.println("hit?");
 			int input = scan.nextInt();
 			while(input == 1) 
@@ -104,6 +91,7 @@ public class BlackJack {
 				}
 				
 				System.out.println("hit?");
+				table.displayButton();
 				input = scan.nextInt();
 
 			}
@@ -113,12 +101,12 @@ public class BlackJack {
 			if(over == true)
 			{
 				dealer.revealHidden();
-				table.display();
+				table.updateDisplay();
 			}
 			else
 			{
 				dealer.revealHidden();
-				table.display();
+				table.updateDisplay();
 				
 				int scoreAce_1 = dealer.getScore_1();
 				int scoreAce_11 = dealer.getScore_11();
@@ -140,7 +128,8 @@ public class BlackJack {
 						break;
 					}
 					
-					if(((scoreAce_1 > 17) && (scoreAce_1 < 21)) || ((scoreAce_11 > 17) && (scoreAce_11 < 21)))
+					//if(((scoreAce_1 > 17) && (scoreAce_1 <= 21)) || ((scoreAce_11 > 17) && (scoreAce_11 <= 21)))
+					if((scoreAce_1 > 17) && (scoreAce_1 <= 21))
 					{
 						break;
 					}
