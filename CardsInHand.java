@@ -23,16 +23,39 @@ public class CardsInHand {
 	
 	public void setHidden(double faceValue)
 	{
+		//System.out.println(faceValue);
 		hiddenHand = faceValue;
-		cardInHand[0] = -1;
-		//handScore ++;
+		cardInHand[1] = -1;
 		cardCounter++;
-		isDealer = true;
+		//cardCounter++;
+		//isDealer = true;
+		//System.out.println(faceValue +" "+cardCounter);
+		int firstCard = (int)cardInHand[0];
+		int hiddenFaceValue = (int)hiddenHand;
+		if((firstCard >= 10) && (hiddenFaceValue == 1))
+		{
+			//check for ace
+			dealerBlackJack = true;
+		}
+		
+		if(firstCard == 1)
+		{
+			//ask for insurance
+			if(hiddenFaceValue >= 10)
+			{
+				dealerBlackJack = true;
+				//pay insurance
+			}
+			else
+			{
+				//take insurance
+			}
+		}
 	}
 	
 	public void revealHidden()
 	{
-		cardInHand[0] = hiddenHand;
+		cardInHand[1] = hiddenHand;
 		
 		int faceValue = (int)hiddenHand;
 
@@ -70,20 +93,21 @@ public class CardsInHand {
 		cardCounter++;
 		
 		int faceValue = (int)rawValue;
+		/*
 		int hiddenFaceValue = (int)hiddenHand;
 		
 		if(isDealer == true)
 		{
-			if((faceValue == 1) && (hiddenFaceValue >= 10))
+			if((faceValue >= 10) && (hiddenFaceValue == 1))
 			{
 				//check for ace
 				dealerBlackJack = true;
 			}
 			
-			if(faceValue >= 10)
+			if((int)cardInHand[0] == 1)
 			{
 				//ask for insurance
-				if(hiddenFaceValue == 1)
+				if(hiddenFaceValue >= 10)
 				{
 					dealerBlackJack = true;
 					//pay insurance
@@ -93,7 +117,7 @@ public class CardsInHand {
 					//take insurance
 				}
 			}
-		}
+		}*/
 		
 		
 			

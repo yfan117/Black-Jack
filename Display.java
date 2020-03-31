@@ -1,10 +1,9 @@
 package blackJack;
 
-//import javax.swing.ImageIcon;
-//import javax.swing.JFrame;
-//import javax.swing.JLabel;
-
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 class Draw extends JPanel
@@ -12,6 +11,7 @@ class Draw extends JPanel
 	static Image cardImage;
 	static Image backGround;
 	static ImageIcon imageIcon;
+	
 	
 
 	static boolean isDealer = false;
@@ -27,14 +27,22 @@ class Draw extends JPanel
 	static double[] dealerCards;
 	static double[] playerCards;
 	
+	static boolean over = false;
 	
-	
+	static JButton stand = new JButton(new ImageIcon("res/standButton.png"));
+	static JButton hit = new JButton(new ImageIcon("res/hitButton.png"));
+	static JButton another = new JButton(new ImageIcon("res/anotherButton.png"));
+
 	public Draw()
 	{
 		imageIcon = new ImageIcon("res/blackJackTable.png");
 		backGround = imageIcon.getImage();
-		//repaint();
-		//paint(null);
+		//hit.setBounds(1100, 480, 200, 100);
+		//imageIcon = new ImageIcon("res/hitButton.png");
+		
+		
+		repaint();
+	
 	}
 	
 	public void setVariable(double dealerCard[], double playerCards[], int dealerNum, int playNum)
@@ -45,12 +53,87 @@ class Draw extends JPanel
 		dealerNumCard = dealerNum;
 		playerNumCard = playNum;
 		
+		
+		
 		repaint();
+		
+		
 	}
 	
+	public void displayButton()	{
+
+	
 		
-		protected void paintComponent(Graphics g)
-		{
+		hit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				//System.out.println("here");
+				setResult(1);
+				
+				
+				
+			}
+
+	
+		}
+				);
+		
+		stand.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				//System.out.println("here");
+				setResult(2);
+				
+				
+				
+			}
+
+	
+		}
+				);
+		
+		another.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				//System.out.println("here");
+				setResult(3);
+				
+				
+				
+			}
+
+	
+		}
+				);
+		
+		
+		
+	}
+	int buttonResult = 0;
+	public void setResult(int buttonResult)
+	{
+		this.buttonResult = buttonResult;
+	}
+	public int getResult()
+	{
+		return buttonResult;
+	}
+	
+	static String announce = "";
+	public void setAnnounce(String announce)
+	{
+		this.announce = announce;
+	}
+		
+	protected void paintComponent(Graphics g)
+	{
+		 
 			super.paintComponent(g);
 			g.drawImage(backGround, 0, 0, null);
 			g.setFont(new Font("serif", Font.BOLD, 40));
@@ -80,7 +163,7 @@ class Draw extends JPanel
 				}
 				else
 				g.drawString(value, dealerX + 68, dealerY + 130);
-				dealerX = dealerX - 100;
+				dealerX = dealerX - 105;
 				value = "";
 			}
 			
@@ -102,14 +185,43 @@ class Draw extends JPanel
 				playerX = playerX + 50;
 				playerY = playerY - 50;
 				value = "";
+
+				
 			}
-			
+			//System.out.println("here");
+			if(over == false)
+			{
+				remove(another);
+				hit.setBounds(1100, 480, 200, 100);
+				stand.setBounds(1100, 600, 200, 100);
+				
+				add(stand);
+				add(hit);
+	
+			}
 			dealerX = 750;
 			dealerY = 250;
 			playerX = 600;
 			playerY = 660;
 			
-		}
+			if(over == true)
+			{
+				remove(stand);
+				remove(hit);
+				g.setColor(new Color(255,223,0));
+				g.drawString(announce, 900, 140);
+				another.setBounds(1100, 480, 200, 100);
+				
+				add(another);
+				
+			}
+			
+	}
+	
+	public void setOver(boolean over)
+	{
+		this.over = over;
+	}
 		
 		public static String getValue(int rawValue)
 		{
@@ -186,97 +298,87 @@ public class Display extends JFrame{
 	public static int numPlayerCard = 0;
 	public static int numDealerCard = 0;
 	
-	
-	
-	//static BufferedImage cardImage;
-	
-	//static JFrame frame;
-	static JLabel label;
-	static JLayeredPane layer;
 	static Draw update ;
-	public void display()
-	{
-		
-		
-			System.out.print("Dealer: ");
-	
-			
-				//String type = getTypeCard(dealerCard[i]);
-				//repaint();
-				
-				update.setVariable(dealerCard, playerCard, numDealerCard, numPlayerCard);
-				/*
-				System.out.print(type +" "+(int)dealerCard[i] +"   ");
-				*/
-			
-				
-		
-				/*
-			String type = getTypeCard(playerCard[i]);
-			System.out.print(type +" "+(int)playerCard[i] +"   ");
-			*/
-			
-			
-		
-		if(over == true)
-		{
-			System.out.println("game over");
 
-		}
-		System.out.println();
-		System.out.println();
 
-		setVisible(true);
-	}
 	public Display ()
 	{
-		//frame = new JFrame("Black Jack");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(1392, 851);
 		setResizable(false);
-		
-		//display();
+		//setLocationRelativeTo(null);
+		setSize(1392 , 851);
+
+
 		update = new Draw();
 		getContentPane().add(update);
 		
-		setVisible(true);
 		
 		
+		setVisible(true);		
+
+	}
+	
+	
+	
+	public void updateDisplay()
+	{
+		update.setVariable(dealerCard, playerCard, numDealerCard, numPlayerCard);
+
+	}
+	
+	public void setAnnounce(String announce)
+	{
+		update.setAnnounce(announce);
+	}
+	
+
+	public int getResult() 
+	{
+	
+		update.displayButton();
+		int temp = update.getResult();
+		//System.out.println(temp);
+		while(temp == 0)
+		{
+			temp = update.getResult();
+
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+	//	boolean temp = update.getResult();
+		update.setResult(0);
+		return temp;
 		
 	}
+	
 
 	
 	public void setDealer(CardsInHand dealer)
 	{
 		dealerCard = dealer.getCards();
 		numDealerCard = dealer.getNumCard();
-		display();
-		
+		update.setVariable(dealerCard, playerCard, numDealerCard, numPlayerCard);
+
 	}
 	
 	public void setPlayer(CardsInHand player)
 	{
 		playerCard = player.getCards();
 		numPlayerCard = player.getNumCard();
-		display();
+		update.setVariable(dealerCard, playerCard, numDealerCard, numPlayerCard);
+		
 	}
 	
-	
 
-	
-	
-	
-	
-	
-	//--------------------------------------------------------------------
-	
-	
-	
-	
-	
 	public void setOver(boolean isOver)
 	{
-		over = isOver;
+		update.setOver(isOver);
 	}
 	
 	
