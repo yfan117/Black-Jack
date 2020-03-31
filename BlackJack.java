@@ -122,7 +122,7 @@ public class BlackJack {
 				int scoreAce_1 = dealer.getScore_1();
 				int scoreAce_11 = dealer.getScore_11();
 				
-				while((scoreAce_1 < 17) && (scoreAce_11 < 17))
+				while((scoreAce_1 < 17) || (scoreAce_11 <= 17))
 				{
 					dealerHit(table, dealer);
 					
@@ -139,8 +139,8 @@ public class BlackJack {
 						break;
 					}
 					
-					//if(((scoreAce_1 > 17) && (scoreAce_1 <= 21)) || ((scoreAce_11 > 17) && (scoreAce_11 <= 21)))
-					if((scoreAce_1 > 17) && (scoreAce_1 <= 21))
+					if(((scoreAce_1 >= 17) && (scoreAce_1 <= 21)) || ((scoreAce_11 > 17) && (scoreAce_11 <= 21)))
+					//if((scoreAce_1 > 17) && (scoreAce_1 <= 21))
 					{
 						break;
 					}
