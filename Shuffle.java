@@ -1,5 +1,3 @@
-package blackJack;
-
 import java.util.Random;
 
 public class Shuffle {
