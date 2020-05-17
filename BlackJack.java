@@ -1,5 +1,3 @@
-package blackJack;
-
 import java.util.Scanner;
 
 public class BlackJack {
